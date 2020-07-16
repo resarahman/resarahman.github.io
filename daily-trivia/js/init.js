@@ -34,9 +34,9 @@
 	}
 	
 	$(window).resize(function(){
-		resizeLoaderFunc();
+		//resizeLoaderFunc();
 	});
-	resizeLoaderFunc();
+	//resizeLoaderFunc();
 	checkBrowser();
 });
 

@@ -76,11 +76,11 @@ function resizeGameFunc(){
 				}
 			}
 			
-			$('#mainHolder').css('width', newW);
+			//$('#mainHolder').css('width', newW);
 			//$('#mainHolder').css('height', newH);
 			
-			$('#mainHolder').css('left', (windowW/2)-(newW/2));
-			$('#mainHolder').css('top', (windowH/2)-(newH/2));
+			//$('#mainHolder').css('left', (windowW/2)-(newW/2));
+			//$('#mainHolder').css('top', (windowH/2)-(newH/2));
 		}else{
 			if(gameData.mode == 'portrait'){
 				newW = portraitW;
@@ -90,11 +90,11 @@ function resizeGameFunc(){
 				scalePercent = 1;	
 			}
 			
-			$('#mainHolder').css('width', newW);
+			//$('#mainHolder').css('width', newW);
 			//$('#mainHolder').css('height', newH);
 			
-			$('#mainHolder').css('left', 320);
-			$('#mainHolder').css('top', 0);	
+			//$('#mainHolder').css('left', 320);
+			//$('#mainHolder').css('top', 0);	
 		}
 		
 		resizeGameDetail();

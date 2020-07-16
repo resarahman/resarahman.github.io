@@ -145,7 +145,7 @@ var explanationAlign = 'center';
 
 //result
 var scoreMode = 'score'; //display result by 'score' or 'timer'
-var scoreDisplayText = 'You score : [NUMBER]!'; //score result display text
+var scoreDisplayText = 'Your score :<br> <span>[NUMBER]</span>'; //score result display text
 var timerDisplayText = 'Best time : [NUMBER]!'; //timer result display text
 
 //Social share, [SCORE] will replace with game score
@@ -167,7 +167,7 @@ var quesLandscape_arr = [];
 var quesPortrait_arr = [];
 var quesLandscapeSequence_arr = [];
 var quesPortraitSequence_arr = [];
-var categoryData = {page:1, total:0, thumb:16, max:3};
+var categoryData = {page:1, total:0, thumb:16, max:4};
 
 var audioLandscape_arr = [];
 var audioPortrait_arr = [];
@@ -336,6 +336,7 @@ function goPage(page){
 			
 			playSound('soundResult');
 			stopGame();
+			console.log(playerData, 'playerData');
 			if(scoreMode == 'score'){
 				$('#resultScore').html(scoreDisplayText.replace('[NUMBER]', playerData.score));
 				saveGame(playerData.score, gameData.category_arr[gameData.categoryNum]);
@@ -375,7 +376,7 @@ function buildCategory(){
 				}
 			}
 		}
-		var categoryHTML = '<li class="categoryThumb buttonClick"><div><img src="'+thumbSrc+'" /></div><div class="categoryTitle fontCategory resizeFont"  data-fontSize="30" data-lineHeight="30">'+gameData.category_arr[c]+'</div></li>';
+		var categoryHTML = '<li class="categoryThumb buttonClick"><div><img src="'+thumbSrc+'" /></div><div class="categoryTitle fontCategory"  data-fontSize="30" data-lineHeight="30">'+gameData.category_arr[c]+'</div></li>';
 		$('#categoryList').append(categoryHTML);	
 	}
 	
@@ -392,7 +393,7 @@ function resetCategory(){
 	if(gameData.mode == 'portrait'){
 		categoryData.max = 4;
 	}else{
-		categoryData.max = 3;
+		categoryData.max = 4;
 	}
 	
 	categoryData.total = categoryData.thumb/categoryData.max;
@@ -417,10 +418,10 @@ function toggleCategory(con){
 function displayCategory(){
 	var startPageNum = (categoryData.page-1) * categoryData.max;
 	var endPageNum = startPageNum + categoryData.max;
-	///$('#categoryList li').hide();
+	$('#categoryList li').hide();
 	$('#categoryList li').each(function(index, element) {
         if(index >= startPageNum && index < endPageNum){
-			//$(this).show();
+			$(this).show();
 		}
     });
 }
