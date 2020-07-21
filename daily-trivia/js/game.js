@@ -22,7 +22,7 @@ var categoryPage = true; //show/hide category select page
 var categoryAllOption = true; //add ALL category select option
 var categoryAllText = 'All'; //text for all category select option
 
-var questionTotalDisplay = '[NUMBER]/[TOTAL]:'; //current question and total question display
+var questionTotalDisplay = '[NUMBER]/[TOTAL]'; //current question and total question display
 var totalQuestions = 0; //set 0 for all questions, set more than 0 to limit total questions
 
 var enableRandomQuestion = true; //enable question in random sequence
@@ -66,7 +66,7 @@ var answerListsEnable = true; //enable answer list style
 var answerLists = ['A. ','B. ','C. ','D. ','E. ','F. ','G. ','H. ']; //answer list style format, maximum 8
 var answerAnimationEnable = true; //enable answer animation
 
-var answerButtonBgEnable = true; //toggle answer button background
+var answerButtonBgEnable = false; //toggle answer button background
 var answerButtonBgRoundNumber = 15; //answer button background round corner number
 var answerButtonBgColour = '#FAB837'; //answer button background colour
 var answerButtonBgShadowColour = '#D1941C'; //answer button background shadow colour
@@ -674,7 +674,7 @@ function buildQuestion(){
 	if(value.type == 'image'){
 		var questionHTML = '<div class="question fontQuestion fitImg" style="top:'+value.top+'%; left:'+value.left+'%; width:'+value.width+'%; "><img src="'+gameData.targetArray[gameData.sequenceNum].question+'" /></div>';
 	}else{
-		var questionHTML = '<div class="question fontQuestion resizeFont" data-fontSize="'+value.fontSize+'" data-lineHeight="'+value.lineHeight+'" style="font-size:'+value.fontSize+'px; line-height:'+value.lineHeight+'px; color:'+value.color+';  text-align:'+value.align+'; top:'+value.top+'%; left:'+value.left+'%; width:'+value.width+'%;"><span class="game-number">'+ curQuestionText +'</span>'+gameData.targetArray[gameData.sequenceNum].question+'</div>';
+		var questionHTML = '<div class="question fontQuestion resizeFont" data-fontSize="'+value.fontSize+'" data-lineHeight="'+value.lineHeight+'" style="font-size:'+value.fontSize+'px; line-height:'+value.lineHeight+'px; color:'+value.color+';  text-align:'+value.align+';"><span class="game-number">'+ curQuestionText +'</span>'+gameData.targetArray[gameData.sequenceNum].question+'</div>';
 	}
 	$('#questionHolder').append(questionHTML);
 	
@@ -1047,7 +1047,7 @@ function buildAnswers(){
 				curAnswerList = '';	
 			}
 			
-			var answerWrapperHTML = "<div id='answer"+n+"' class='answer resizeBorder' data-border='"+answerButtonBgRoundNumber+"' style='border-radius: "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px; -moz-border-radius: "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px; -webkit-border-radius: "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px; width:"+value.width+"%; height:"+value.height+"%; top:"+value.top+"%; left:"+value.left+"%;'></div>";
+			var answerWrapperHTML = "<div id='answer"+n+"' class='answer'></div>";
 			
 			$('#answerHolder').append(answerWrapperHTML);
 			
@@ -1059,7 +1059,7 @@ function buildAnswers(){
 				$('#answer'+n).append(backgroundHTML);
 			}
 			
-			var answerHTML = '<div id="text'+n+'" class="fontAnswer resizeFont" data-fontSize="'+value.fontSize+'" data-lineHeight="'+value.lineHeight+'" style="position:relative; font-size:'+value.fontSize+'px; line-height:'+value.lineHeight+'px; color:'+value.color+';  text-align:'+value.align+';">'+curAnswerList+value.text+'</div>';
+			var answerHTML = '<div id="text'+n+'" class="fontAnswer" style="position:relative; color:'+value.color+';  text-align:'+value.align+';">'+curAnswerList+value.text+'</div>';
 			$('#answer'+n).append(answerHTML);
 			
 			var clickHTML = "<div class='buttonClick resizeBorder' data-border='"+answerButtonBgRoundNumber+"' style='position:absolute; border-radius: "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px; -moz-border-radius: "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px; -webkit-border-radius: "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px; width:100%; height:100%; position:absolute; top:"+value.offsetTop+"%;'></div>";

@@ -70,7 +70,7 @@
 				<div class="row">
 					<div class="col-md-4 offset-md-4">
 						<div class="logo-wrapper mb-4">
-							<img src="assets/new/logo-trivia.png" />
+							<img src="assets/new/logo-trivia.svg" />
 						</div>
 
 						<div class="progress">
@@ -103,7 +103,7 @@
 				</div>
 				<div id="optionList" style="display:none;">
 					<div id="buttonFullscreen" class="buttonClick buttonIcon buttonFullscreen"><img alt="Fullscreen" src="assets/button_fullscreen.svg" /></div>
-					<div id="buttonSound" class="buttonClick buttonIcon buttonSound buttonSoundOn"><img class="soundOff" alt="Sound Off" src="assets/button_sound_off.svg" /><img class="soundOn" alt="Sound On" src="assets/button_sound_on.svg" /></div>
+					<div id="buttonSound" class="buttonClick buttonIcon buttonSound buttonSoundOn"><img class="soundOff" alt="Sound Off" src="assets/new/sound-on.svg" /><img class="soundOn" alt="Sound On" src="assets/new/sound-off.svg" /></div>
 					<div id="buttonExit" class="buttonClick buttonIcon buttonExit"><img alt="Exit" src="assets/button_exit.svg" /></div>
 					
 				</div>
@@ -114,7 +114,7 @@
 					<div class="row">
 						<div class="col-md-4 offset-md-4">
 							<div class="logo-wrapper mb-4">
-								<img src="assets/new/logo-trivia.png" />
+								<img src="assets/new/logo-trivia.svg" />
 							</div>
 
 							<div class="preloadText fontPreload resizeFont"></div>
@@ -147,10 +147,18 @@
 			</div>
 			
 			<div id="gameHolder">
-				<div id="gameStatus" class="fitImg">
+				<div id="hint-btn" class="buttonClick btn-hint">
+					<img alt="Hint" src="assets/new/hint.svg" />
+				</div>
+
+				<div id="gameStatus" class="">
 					<div class="gameTimer fontStatus">
-						<div class="gameTimerStatus resizeFont" data-fontSize="30" data-lineHeight="30">35</div>
-						<img class="soundOn" alt="Timer" src="assets/item_timer.svg" />
+						<div class="gameTimerStatus">35</div>
+						<a href="#" class="game-timer-action">
+							<img src="assets/new/icon/play.svg" class="off">
+							<img src="assets/new/icon/pause.svg" class="on">
+						</a>
+						<img class="soundOn" alt="Timer" src="assets/new/time-counter.svg" />
 					</div>
 				</div>
 				
@@ -158,8 +166,15 @@
 					
 				</div>
 				
-				<div id="questionHolder">
-					<div class="questionText fontQuestion">How much is 150% of 50<br/>How much is 150% of 50</div>
+
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col">
+							<div id="questionHolder">
+								<div class="questionText fontQuestion">How much is 150% of 50<br/>How much is 150% of 50</div>
+							</div>
+						</div>
+					</div>
 				</div>
 				
 				<div id="questionResultHolder">
