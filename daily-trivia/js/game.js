@@ -159,7 +159,7 @@ var shareMessage = '[SCORE] is mine new highscore on Quiz Game 2 Game! Try it no
  *
  */
 $.editor = {enable:false};
-var playerData = {score:0, answered:false, answerType:'', answer_arr:[]};
+var playerData = {score:0, answered:false, answerType:'', answer_arr:[], correct: 0, wrong: 0, choices: [0, 1, 2, 3]};
 var gameData = {page:'', questionNum:0, sequenceNum:0, categoryNum:0, category_arr:[], categoryThumb_arr:[], sequence_arr:[], targetArray:null, targetAnswerSequence:null, mode:'landscape', oldMode:'landscape', build:false};
 var storeData = {status:false, timerDate:0};
 
@@ -173,7 +173,7 @@ var audioLandscape_arr = [];
 var audioPortrait_arr = [];
 var audioData = {audioNum:0, audioInterval:null};
 
-var timeData = {enable:false, startDate:null, nowDate:null, timer:0};
+var timeData = {enable:false, startDate:null, nowDate:null, timer:0, pause: false};
 
 /*!
  * 
@@ -262,10 +262,89 @@ function buildGameButton(){
 		toggleGameOption();
         toggleConfirm(true);
     });
+
+    $('.js-button-reset').on('click', function(e){
+    	e.preventDefault();
+    	playSound('soundClick');
+		toggleConfirm(true);
+    });
+
+    $('.js-game-timer-toggle').on('click', function(e){
+    	e.preventDefault();
+    	playSound('soundClick');
+    	var is_playing = $(this).data('play');
+
+    	if ( is_playing ) {
+    		$(this).find('.btn-state-play').addClass('on').removeClass('off').end()
+    		.find('.btn-state-pause').addClass('off').removeClass('on');
+    		$(this).data('play', false);
+
+    		timeData.pause = true;
+    		toggleGameTimer(false);
+    		togglePauseConfirm(true);
+    	} else {
+    		$(this).find('.btn-state-play').addClass('off').removeClass('on').end()
+    		.find('.btn-state-pause').addClass('on').removeClass('off');
+    		$(this).data('play', true);
+    	}
+    });
+
+    $('.js-button-quiz-continue').on('click', function(e){
+    	e.preventDefault();
+    	playSound('soundClick');
+
+    	togglePauseConfirm(false);
+    	toggleGameTimer(true);
+    	timeData.pause = false;
+
+    	$('.js-game-timer-toggle').find('.btn-state-play').addClass('off').removeClass('on').end()
+		.find('.btn-state-pause').addClass('on').removeClass('off').end()
+		.data('play', true);
+    });
+
+    $('.js-button-quiz-surrender').on('click', function(e){
+    	e.preventDefault();
+    	playSound('soundClick');
+
+    	togglePauseConfirm(false);
+    	toggleResult(false);
+
+    	timeData.pause = false;
+    	$('.js-game-timer-toggle').find('.btn-state-play').addClass('off').removeClass('on').end()
+		.find('.btn-state-pause').addClass('on').removeClass('off').end()
+		.data('play', true);
+
+		goPage('result');
+    });
+
+    $('.js-button-hint').on('click', function(e){
+    	e.preventDefault();
+    	playSound('soundClick');
+    	removeArray(playerData.choices, ( playerData.correctAnswer[0] - 1 ) );
+    	
+    	if ( playerData.choices.length > 2 ) {
+    		playerData.choices.pop();
+    	}
+    	
+    	for(var n=0;n<playerData.choices.length;n++){
+			$('#answer'+playerData.choices[n]).addClass('disabled');
+		}
+    });
 	
 	$(window).focus(function() {
         //resizeGameDetail();
     });
+}
+
+function removeArray(arr) {
+    var what, a = arguments, L = a.length, ax;
+    while (L > 1 && arr.length) {
+        what = a[--L];
+        while ((ax= arr.indexOf(what)) !== -1) {
+            arr.splice(ax, 1);
+        }
+    }
+    return arr;
 }
 
 /*!
@@ -311,12 +390,16 @@ function goPage(page){
 	$('#gameHolder').hide();
 	$('#resultHolder').hide();
 	$('#buttonExit').show();
+	$('.js-button-reset').show();
+	$('#header-score').hide();
+	$('#option').show();
 	
 	var targetContainer = '';
 	switch(page){
 		case 'main':
 			targetContainer = $('#logoHolder');
 			$('#buttonExit').hide();
+			$('.js-button-reset').hide();
 		break;
 		
 		case 'category':
@@ -326,19 +409,22 @@ function goPage(page){
 		case 'game':
 			targetContainer = $('#gameHolder');
 			startGame();
+			$('#header-score').show();
 		break;
 		
 		case 'result':
 			targetContainer = $('#resultHolder');
+			$('#option').hide();
 			if(!shareEnable){
-				$('#shareOption').hide();	
+				$('#shareOption').hide();
 			}
 			
 			playSound('soundResult');
 			stopGame();
-			console.log(playerData, 'playerData');
 			if(scoreMode == 'score'){
 				$('#resultScore').html(scoreDisplayText.replace('[NUMBER]', playerData.score));
+				$('#result-correct-count').html(playerData.correct);
+				$('#result-wrong-count').html(playerData.wrong);
 				saveGame(playerData.score, gameData.category_arr[gameData.categoryNum]);
 			}else if(scoreMode == 'timer'){
 				playerData.timer = timeData.timer;
@@ -350,6 +436,7 @@ function goPage(page){
 			toggleSaveButton(true);
 		break;
 	}
+	$('.header').attr('data-page', page);
 	
 	targetContainer.show();
 	TweenMax.to(targetContainer, 0, {opacity:0, overwrite:true});
@@ -469,6 +556,8 @@ function startGame(){
 	gameData.questionNum = 0;
 	gameData.sequenceNum = 0;
 	playerData.score = 0;
+	playerData.correct = 0;
+	playerData.wrong = 0;
 	
 	timeData.accumulate = 0;
 	timeData.countdown = coundownTimer;
@@ -522,6 +611,7 @@ function loadQuestion(){
 	fileFest=[];
 	gameData.build = false;
 	playerData.answered = false;
+	playerData.choices = [0,1,2,3];
 	gameData.sequenceNum = gameData.sequence_arr[gameData.questionNum];
 		
 	var randomAnswerLayout = false;
@@ -1059,7 +1149,7 @@ function buildAnswers(){
 				$('#answer'+n).append(backgroundHTML);
 			}
 			
-			var answerHTML = '<div id="text'+n+'" class="fontAnswer" style="position:relative; color:'+value.color+';  text-align:'+value.align+';">'+curAnswerList+value.text+'</div>';
+			var answerHTML = '<div id="text'+n+'" class="fontAnswer resizeFont" data-fontSize="'+value.fontSize+'" style="position:relative; font-size:'+value.fontSize+'px; color:'+value.color+';  text-align:'+value.align+';">'+curAnswerList+value.text+'</div>';
 			$('#answer'+n).append(answerHTML);
 			
 			var clickHTML = "<div class='buttonClick resizeBorder' data-border='"+answerButtonBgRoundNumber+"' style='position:absolute; border-radius: "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px; -moz-border-radius: "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px; -webkit-border-radius: "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px; width:100%; height:100%; position:absolute; top:"+value.offsetTop+"%;'></div>";
@@ -1111,6 +1201,7 @@ function buildAnswers(){
 		
 		buildAnswerEvent('#answer'+n);
 	}
+	//console.log(playerData.correctAnswer, 'correctAnswer');
 	
 	if(playerData.answerType == 'drag'){
 		setDragIndex();
@@ -1485,14 +1576,14 @@ function buildInputEvent(obj){
  */
 
 function focusTapAnswer(n, type, submit, hide){
-	if(!playerData.answered){
+	//if(!playerData.answered){
 		stopAudio();
 		toggleAudioInterval(false);
 		playSound('soundSelectAnswer');
 		
 		if(submit == 'true'){
 			//for draggable, input and multiple choice answers
-			toggleGameTimer(false);
+			//toggleGameTimer(false);
 			playerData.answered = true;
 			if(hide){
 				$('#answer'+n).hide();
@@ -1687,31 +1778,46 @@ function focusTapAnswer(n, type, submit, hide){
 						
 						for(var n=0;n<playerData.answer_arr.length;n++){
 							var currentAnswer = playerData.answer_arr[n];
-							$('#answer'+currentAnswer).removeClass('answerFocus');
+							$('#answer'+currentAnswer).removeClass('answerFocus').addClass('wrong');
 							$('#answer'+currentAnswer).find('.background').css('background', wrongButtonBgColour);
 							$('#answer'+currentAnswer).find('.shadow').css('background', wrongButtonBgShadowColour);
+							playSound('soundAnswerWrong');
+							removeArray(playerData.choices, currentAnswer );
 						}
 						
 						for(var n=0;n<playerData.correctAnswer.length;n++){
+							//var currentAnswer = playerData.correctAnswer[n]-1;
+							//$('#answer'+currentAnswer).addClass('answerFocus');
+							//$('#answer'+currentAnswer).find('.background').css('background', answeredButtonBgColour);
+							//$('#answer'+currentAnswer).find('.shadow').css('background', answeredButtonBgShadowColour);
+							displayQuestionAction();
+							/*TweenMax.to($('#answer'+currentAnswer), 0, {scaleX:.5, scaleY:.5, overwrite:true});
+							TweenMax.to($('#answer'+currentAnswer), 1, {scaleX:1, scaleY:1, alpha:1, overwrite:true, ease:Elastic.easeOut, onComplete:function(){
+								TweenMax.to($('#answer'+currentAnswer), 0, {delay:1, overwrite:true, onComplete:function(){
+									displayQuestionAction();
+								}});
+							}});*/
+						}
+					}else{
+						for(var n=0;n<playerData.correctAnswer.length;n++){
 							var currentAnswer = playerData.correctAnswer[n]-1;
-							$('#answer'+currentAnswer).addClass('answerFocus');
-							$('#answer'+currentAnswer).find('.background').css('background', answeredButtonBgColour);
-							$('#answer'+currentAnswer).find('.shadow').css('background', answeredButtonBgShadowColour);
-							
+							$('#answer'+currentAnswer).addClass('correct');
+							playSound('soundAnswerCorrect');
+
 							TweenMax.to($('#answer'+currentAnswer), 0, {scaleX:.5, scaleY:.5, overwrite:true});
 							TweenMax.to($('#answer'+currentAnswer), 1, {scaleX:1, scaleY:1, alpha:1, overwrite:true, ease:Elastic.easeOut, onComplete:function(){
 								TweenMax.to($('#answer'+currentAnswer), 0, {delay:1, overwrite:true, onComplete:function(){
-									displayQuestionResult();
+									displayQuestionAction();
 								}});
 							}});
 						}
-					}else{
-						displayQuestionResult();
+
+						//displayQuestionResult();
 					}
 				}
 			}
 		}});
-	}
+	//}
 }
 
 /*!
@@ -1844,9 +1950,11 @@ function displayQuestionResult(){
 	if(checkAnswerCorrect()){
 		playSound('soundAnswerCorrect');
 		playerData.score++;
+		playerData.correct++;
 		$('.questionResultText').html(correctDisplayText);
 	}else{
 		playSound('soundAnswerWrong');
+		playerData.wrong++;
 		$('.questionResultText').html(wrongDisplayText);
 	}
 	
@@ -1868,6 +1976,18 @@ function displayQuestionResult(){
 	TweenMax.to($('#questionResultHolder'), 1, {alpha:1, overwrite:true, onComplete:function(){
 		
 	}});
+}
+
+function displayQuestionAction(){
+	if(checkAnswerCorrect()){
+		playerData.score++;
+		playerData.correct++;
+		prepareNextQuestion();
+	}else{
+		playerData.wrong++;
+		playerData.score--;
+	}
+	$('#header-score-placeholder').html(playerData.score);
 }
 
 function presetAnswered(){
@@ -2026,17 +2146,25 @@ function toggleGameTimer(con){
 	
 	TweenMax.killTweensOf(timeData);
 	if(con){
-		if(storeData.status){
+		if ( timeData.pause ) {
+			timeData.startDate = storeData.timerDate = new Date();
+		} else if(storeData.status){
 			timeData.startDate = storeData.timerDate;
 		}else{
 			timeData.startDate = storeData.timerDate = new Date();
 		}
 		loopTimer();
 	}else{
-		if(timerAllSession){
+		if ( timeData.pause ) {
+			timeData.accumulate = timeData.timer;
+			timeData.countdown = timeData.timer;
+		} 
+		else if(timerAllSession){
 			timeData.accumulate = timeData.timer;
 			timeData.countdown = timeData.timer;
 		}
+
+
 	}
 	timeData.enable = con;
 }
@@ -2070,7 +2198,7 @@ function updateTimer(){
 	if(timerMode == 'default'){
 		timeData.timer = timeData.elapsedTime + timeData.accumulate;
 	}else if(timerMode == 'countdown'){
-		timeData.timer = Math.floor(((timeData.countdown)) - (timeData.elapsedTime))
+		timeData.timer = Math.floor(((timeData.countdown)) - (timeData.elapsedTime));
 	}
 	
 	$('.gameTimerStatus').html(millisecondsToTime(timeData.timer));
@@ -2550,7 +2678,7 @@ function resizeGameDetail(){
         $(this).css('border-radius', borderNumber+"px "+borderNumber+"px "+borderNumber+"px "+borderNumber+"px");
 		$(this).css('-moz-border-radius', borderNumber+"px "+borderNumber+"px "+borderNumber+"px "+borderNumber+"px");
 		$(this).css('-webkit-border-radius', borderNumber+"px "+borderNumber+"px "+borderNumber+"px "+borderNumber+"px");
-    });	
+    });
 }
 
 /*!
@@ -2584,6 +2712,13 @@ function toggleConfirm(con){
 		$('#confirmHolder').show();
 	}else{
 		$('#confirmHolder').hide();	
+	}
+}
+function togglePauseConfirm(con){
+	if(con){
+		$('#confirmPauseHolder').show();
+	}else{
+		$('#confirmPauseHolder').hide();	
 	}
 }
 

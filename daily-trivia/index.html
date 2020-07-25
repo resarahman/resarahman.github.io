@@ -51,12 +51,19 @@
 		<div class="header">
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col py-2">
-						<div class="float-left">
+					<div id="header-logo-text" class="col-8 py-2 offset-2 col-md-4 offset-md-0 header-logo-text">
+						<div class="text-center text-md-left">
 							<span>Daily Trivia</span>
 						</div>
+					</div>
+					<div class="col py-2 col-md-4 header-score-col">
+						<div id="header-score" class="text-md-center" style="display: none;">
+							<span class="head-scorer">SCORE: <strong id="header-score-placeholder">0</strong></span>
+						</div>
+					</div>
+					<div class="col-2 py-2 col-md-4">
 						<div class="float-right">
-							<a href="#" class="button-reset"><img src="assets/new/ic_baseline-replay.svg"> Reset</a>
+							<a href="#" class="button-reset js-button-reset text-decoration-none" style="display: none;"><img src="assets/new/ic_baseline-replay.svg"> <span class="d-none d-md-inline">Reset</span></a>
 						</div>
 					</div>
 				</div>
@@ -98,14 +105,12 @@
 		<div id="mainHolder">
 			<div id="option" class="fitImg">
 				<div id="buttonOption" class="buttonClick buttonIcon buttonOptionOff">
-					<img class="optionOff" alt="Close" src="assets/new/button_setting_close.svg" />
-					<img class="optionOn" alt="Option" src="assets/new/button_setting.svg" />
+					<img class="optionOff" alt="Close" title="Close" src="assets/new/button_setting_close.svg" />
+					<img class="optionOn" alt="Option" title="Option" src="assets/new/button_setting.svg" />
 				</div>
 				<div id="optionList" style="display:none;">
-					<div id="buttonFullscreen" class="buttonClick buttonIcon buttonFullscreen"><img alt="Fullscreen" src="assets/button_fullscreen.svg" /></div>
-					<div id="buttonSound" class="buttonClick buttonIcon buttonSound buttonSoundOn"><img class="soundOff" alt="Sound Off" src="assets/new/sound-on.svg" /><img class="soundOn" alt="Sound On" src="assets/new/sound-off.svg" /></div>
-					<div id="buttonExit" class="buttonClick buttonIcon buttonExit"><img alt="Exit" src="assets/button_exit.svg" /></div>
-					
+					<div id="buttonFullscreen" class="buttonClick buttonIcon buttonFullscreen"><img alt="Fullscreen" title="Fullscreen" src="assets/button_fullscreen.svg" /></div>
+					<div id="buttonSound" class="buttonClick buttonIcon buttonSound buttonSoundOn"><img class="soundOff" alt="Sound Off" title="Sound Off" src="assets/new/sound-on.svg" /><img class="soundOn" alt="Sound On" title="Sound On" src="assets/new/sound-off.svg" /></div>
 				</div>
 			</div>
 			
@@ -116,19 +121,30 @@
 							<div class="logo-wrapper mb-4">
 								<img src="assets/new/logo-trivia.svg" />
 							</div>
-
-							<div class="preloadText fontPreload resizeFont"></div>
-							<a href="#" id="buttonStart" class="buttonClick button button-action m-auto">Start</a>
+							<!-- <div class="preloadText fontPreload resizeFont"></div> -->
+							<a href="#" id="buttonStart" title="Start" class="buttonClick button button-action m-auto">Start</a>
 						</div>
 					</div>
 				</div>
 			</div>
 			
-			<div id="confirmHolder" class="overlayBg">
+			<div id="confirmHolder" class="overlayBg confirmHolder">
 				<div class="confirmContent">
-					<div class="message fontMessage resizeFont ignorePadding" data-fontSize="30" data-lineHeight="30">Are you sure you want to quit the game?</div>
-					<div id="buttonOk" class="okImg buttonClick fitImg"><img alt="Ok" src="assets/button_ok.svg"/></div>
-					<div id="buttonCancel" class="cancelImg buttonClick fitImg"><img alt="Cancel" src="assets/button_cancel.svg"/></div>
+					<div class="message fontMessage ignorePadding">You’re about to reset the game.<br>All your progress will be lost.<br>Do you want to proceed?</div>
+					<div class="d-flex justify-content-between confirm-button-wrapper mx-auto">
+						<a href="#" id="buttonOk" title="Yes" class="button button-action button-alert buttonClick">Yes</a>
+						<a href="#" id="buttonCancel" title="No" class="button button-action button-alert button-cancel buttonClick">No</a>
+					</div>
+				</div>
+			</div>
+
+			<div id="confirmPauseHolder" class="overlayBg confirmHolder" style="display: none;">
+				<div class="confirmContent">
+					<div class="message fontMessage ignorePadding">Game Paused</div>
+					<div class="confirm-button-wrapper mx-auto text-center">
+						<a href="#" title="Continue" class="button button-action js-button-quiz-continue buttonClick d-inline-block mb-4">Continue</a>
+						<a href="#" title="Surrender" class="button button-action js-button-quiz-surrender buttonClick d-inline-block">Surrender</a>
+					</div>
 				</div>
 			</div>
 
@@ -140,32 +156,29 @@
 							<span class="d-block category-heading-text">Select Category</span>
 						</h2>
 					</div>
-					<div id="buttonNextCat" class="nextImg buttonClick fitImg"><img alt="Next" src="assets/new/button_next.svg"/></div>
-					<div id="buttonPrevCat" class="prevImg buttonClick fitImg"><img alt="Previous" src="assets/new/button_previous.svg"/></div>
+					<div id="buttonNextCat" class="nextImg buttonClick fitImg"><img alt="Next" title="Next" src="assets/new/button_next.svg"/></div>
+					<div id="buttonPrevCat" class="prevImg buttonClick fitImg"><img alt="Previous" title="Previous" src="assets/new/button_previous.svg"/></div>
 					<ul id="categoryList"></ul>
 				</div>
 			</div>
 			
 			<div id="gameHolder">
-				<div id="hint-btn" class="buttonClick btn-hint">
-					<img alt="Hint" src="assets/new/hint.svg" />
+				<div id="hint-btn" class="buttonClick btn-hint js-button-hint">
+					<img alt="Hint" title="Hint" src="assets/new/hint.svg" />
 				</div>
 
 				<div id="gameStatus" class="">
 					<div class="gameTimer fontStatus">
 						<div class="gameTimerStatus">35</div>
-						<a href="#" class="game-timer-action">
-							<img src="assets/new/icon/play.svg" class="off">
-							<img src="assets/new/icon/pause.svg" class="on">
+						<a href="#" class="game-timer-action js-game-timer-toggle" data-play="true">
+							<img src="assets/new/icon/play.svg" title="Play" class="btn-state-play off">
+							<img src="assets/new/icon/pause.svg" title="Pause" class="btn-state-pause on">
 						</a>
 						<img class="soundOn" alt="Timer" src="assets/new/time-counter.svg" />
 					</div>
 				</div>
 				
-				<div id="questionLoaderHolder">
-					
-				</div>
-				
+				<div id="questionLoaderHolder"></div>
 
 				<div class="container-fluid">
 					<div class="row">
@@ -203,9 +216,9 @@
 						<ul class="scoreList">
 							
 						</ul>
-						<div id="buttonScorePrev" class="buttonScorePrev buttonClick"><img alt="Prev" src="assets/button_score_prev.svg"/></div>
+						<!-- <div id="buttonScorePrev" class="buttonScorePrev buttonClick"><img alt="Prev" src="assets/button_score_prev.svg"/></div>
 						<div id="buttonBack" class="buttonBack buttonClick"><img alt="Back" src="assets/button_back.svg"/></div>
-						<div id="buttonScoreNext" class="buttonScoreNext buttonClick"><img alt="Next" src="assets/button_score_next.svg"/></div>
+						<div id="buttonScoreNext" class="buttonScoreNext buttonClick"><img alt="Next" src="assets/button_score_next.svg"/></div> -->
 					</div>
 				</div>
 				
@@ -243,9 +256,9 @@
 									<div id="shareOption" class="share">
 										<div>Share to:</div>
 										<ul>
-											<li id="buttonFacebook" class="buttonClick"><img alt="Facebook" src="assets/new/button_facebook.svg" /></li>
-											<li id="buttonTwitter" class="buttonClick"><img alt="Twitter" src="assets/new/button_twitter.svg" /></li>
-											<li id="buttonWhatsapp" class="buttonClick"><img alt="Google" src="assets/new/button_whatsapp.svg" /></li>
+											<li id="buttonFacebook" class="buttonClick"><img alt="Facebook" title="Share to Facebook" src="assets/new/button_facebook.svg" /></li>
+											<li id="buttonTwitter" class="buttonClick"><img alt="Twitter" title="Share to Twitter" src="assets/new/button_twitter.svg" /></li>
+											<li id="buttonWhatsapp" class="buttonClick"><img alt="Google" title="Share to WhatsApp" src="assets/new/button_whatsapp.svg" /></li>
 										</ul>
 									</div>
 								</div>
