@@ -1149,7 +1149,7 @@ function buildAnswers(){
 				$('#answer'+n).append(backgroundHTML);
 			}
 			
-			var answerHTML = '<div id="text'+n+'" class="fontAnswer resizeFont" data-fontSize="'+value.fontSize+'" style="position:relative; font-size:'+value.fontSize+'px; color:'+value.color+';  text-align:'+value.align+';">'+curAnswerList+value.text+'</div>';
+			var answerHTML = '<div id="text'+n+'" class="fontAnswer" data-fontSize="'+value.fontSize+'" style="position:relative; color:'+value.color+';  text-align:'+value.align+';">'+curAnswerList+value.text+'</div>';
 			$('#answer'+n).append(answerHTML);
 			
 			var clickHTML = "<div class='buttonClick resizeBorder' data-border='"+answerButtonBgRoundNumber+"' style='position:absolute; border-radius: "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px; -moz-border-radius: "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px; -webkit-border-radius: "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px "+answerButtonBgRoundNumber+"px; width:100%; height:100%; position:absolute; top:"+value.offsetTop+"%;'></div>";
